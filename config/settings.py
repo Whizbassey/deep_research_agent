@@ -15,8 +15,8 @@ class Settings:
     CEREBRAS_API_KEY = os.getenv("CEREBRAS_API_KEY")
     
     # Model settings
-    AI_MODEL = "llama-4-scout-17b-16e-instruct"
-    MAX_TOKENS = 600
+    AI_MODEL = "gpt-oss-120b"
+    MAX_TOKENS = 1000
     TEMPERATURE = 0.2
     
     # Search settings
