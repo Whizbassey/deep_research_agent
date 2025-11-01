@@ -16,7 +16,7 @@ class SubAgent:
         """
         self.search_service = search_service
     
-    def research(self, subtask_id: int, search_query: str, num_results: int = 2) -> dict:
+    def research(self, subtask_id: int, search_query: str, num_results: int = 2, silent: bool = False) -> dict:
         """
         Conduct research for a specific subtask.
         
@@ -24,11 +24,13 @@ class SubAgent:
             subtask_id: ID number of this subtask
             search_query: What to search for
             num_results: Number of search results to gather
+            silent: If True, suppress print statements
             
         Returns:
             Dictionary containing subtask results
         """
-        print(f"  🤖 Subagent {subtask_id}: Researching {search_query}")
+        if not silent:
+            print(f"  🤖 Subagent {subtask_id}: Researching {search_query}")
         
         # Search the web
         results = self.search_service.search(search_query, num_results)

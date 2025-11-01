@@ -1,0 +1,7 @@
+exa-py
+cerebras-cloud-sdk
+python-dotenv
+fastapi
+uvicorn[standard]
+pydantic
+python-multipart

@@ -1,14 +1,35 @@
-# Python-generated files
-__pycache__/
-*.py[oc]
-build/
-dist/
-wheels/
-*.egg-info
+# Backend - Python/UV
+backend/.venv/
+backend/__pycache__/
+backend/*.pyc
+backend/.env
+backend/*.log
+backend/.pytest_cache/
+backend/htmlcov/
+backend/.coverage
+backend/uv.lock
 
-# Virtual environments
-.venv
-.env
+# Frontend - Node/Next.js
+frontend/.env.local
+frontend/.env.production.local
+frontend/.next/
+frontend/out/
+frontend/build/
+frontend/dist/
+frontend/node_modules/
+frontend/.DS_Store
+frontend/*.log
+frontend/.vercel
+frontend/.turbo
 
-.env.*
-*.env
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+Desktop.ini

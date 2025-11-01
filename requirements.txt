@@ -1,3 +1,0 @@
-exa-py
-cerebras-cloud-sdk
-python-dotenv

@@ -10,36 +10,33 @@ class LeadAgent:
     """Orchestrates research across multiple subagents"""
     
     def __init__(self, ai_service: AIService, sub_agent: SubAgent):
-        """
-        Initialize lead agent.
-        
-        Args:
-            ai_service: AI service for generating plans and synthesis
-            sub_agent: Subagent instance for delegating research tasks
-        """
         self.ai_service = ai_service
         self.sub_agent = sub_agent
     
-    def research(self, query: str) -> dict:
+    def research(self, query: str, silent: bool = False) -> dict:
         """
         Conduct multi-agent research on a query.
         
         Args:
             query: Research question or topic
-            
-        Returns:
-            Dictionary containing complete research results
+            silent: If True, suppress console output (for API usage)
         """
-        print(f"🤖 Multi-Agent Research: {query}")
-        print("-" * 50)
+        if not silent:
+            print(f"🤖 Multi-Agent Research: {query}")
+            print("-" * 50)
         
         # Step 1: Plan and delegate
-        print("👨‍💼 LEAD AGENT: Planning and delegating...")
-        plan = self.ai_service.ask(Prompts.delegation_prompt(query))
-        print("  ✓ Subtasks defined and delegated")
+        if not silent:
+            print("👨‍💼 LEAD AGENT: Planning and delegating...")
         
-        # Step 2: Execute parallel research (simulated)
-        print("\n🔍 SUBAGENTS: Working in parallel...")
+        plan = self.ai_service.ask(Prompts.delegation_prompt(query))
+        
+        if not silent:
+            print("  ✓ Subtasks defined and delegated")
+        
+        # Step 2: Execute parallel research
+        if not silent:
+            print("\n🔍 SUBAGENTS: Working in parallel...")
         
         subtask_searches = [
             f"{query} fundamentals principles",
@@ -49,25 +46,31 @@ class LeadAgent:
         
         subagent_results = []
         for i, search_term in enumerate(subtask_searches, 1):
-            result = self.sub_agent.research(i, search_term)
+            result = self.sub_agent.research(i, search_term, silent=silent)
             subagent_results.append(result)
         
         total_sources = sum(len(r["sources"]) for r in subagent_results)
-        print(f"  📊 Combined: {total_sources} sources from {len(subagent_results)} agents")
+        
+        if not silent:
+            print(f"  📊 Combined: {total_sources} sources from {len(subagent_results)} agents")
         
         # Step 3: Synthesize findings
-        print("\n👨‍💼 LEAD AGENT: Synthesizing parallel findings...")
+        if not silent:
+            print("\n👨‍💼 LEAD AGENT: Synthesizing parallel findings...")
+        
         synthesis_prompt = Prompts.synthesis_prompt(query, subagent_results, total_sources)
         final_synthesis = self.ai_service.ask(synthesis_prompt)
         
-        print("\n" + "=" * 50)
-        print("🎯 MULTI-AGENT RESEARCH COMPLETE")
-        print("=" * 50)
-        print(final_synthesis)
+        if not silent:
+            print("\n" + "=" * 50)
+            print("🎯 MULTI-AGENT RESEARCH COMPLETE")
+            print("=" * 50)
+            print(final_synthesis)
         
         return {
             "query": query,
             "subagents": len(subagent_results),
             "total_sources": total_sources,
-            "synthesis": final_synthesis
+            "synthesis": final_synthesis,
+            "subagent_results": subagent_results  # Include for frontend
         }
