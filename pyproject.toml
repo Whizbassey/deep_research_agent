@@ -4,4 +4,7 @@ version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+    "cerebras-cloud-sdk>=1.56.1",
+    "exa-py>=2.0.0",
+]
