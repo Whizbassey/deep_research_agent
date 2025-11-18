@@ -20,7 +20,7 @@ class Settings:
     TEMPERATURE = 0.2
     
     # Search settings
-    DEFAULT_SEARCH_RESULTS = 5
+    DEFAULT_SEARCH_RESULTS = 10
     MAX_CHARACTERS_PER_RESULT = 1000
     
     @classmethod

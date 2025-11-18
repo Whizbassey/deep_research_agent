@@ -35,6 +35,7 @@ class ResearchResponse(BaseModel):
     subagents: int
     total_sources: int
     synthesis: str
+    session_id: Optional[str] = None
     subagent_results: Optional[List[SubagentResult]] = None
     
     class Config:

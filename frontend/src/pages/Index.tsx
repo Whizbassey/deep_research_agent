@@ -5,6 +5,7 @@ import { Sidebar } from "@/components/Sidebar";
 import { ResearchResults } from "@/components/ResearchResults";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 interface Source {
   title: string;
@@ -30,6 +31,7 @@ const Index = () => {
   const [results, setResults] = useState<ResearchData | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [currentQuery, setCurrentQuery] = useState("");
+  const [sessionId, setSessionId] = useState<string | undefined>(undefined);
   const { toast } = useToast();
 
   const handleSearch = async (query: string, numResults: number) => {
@@ -55,6 +57,7 @@ const Index = () => {
 
       const data = await response.json();
       setResults(data);
+      setSessionId(data.session_id);
       
       toast({
         title: "Research Complete",
@@ -80,10 +83,13 @@ const Index = () => {
     <div className="page-container">
       <nav className="top-nav">
         <h2 className="text-xl font-semibold text-foreground">Cognitia Deep Research</h2>
-        <Button variant="outline" size="sm" className="text-sm">
-          <span className="mr-2">●</span>
-          Download PDF
-        </Button>
+        <div className="flex items-center gap-3">
+          <ThemeToggle />
+          <Button variant="outline" size="sm" className="text-sm">
+            <span className="mr-2">●</span>
+            Download PDF
+          </Button>
+        </div>
       </nav>
 
       <div className="main-layout">
@@ -125,8 +131,8 @@ const Index = () => {
           )}
         </div>
         {(() => {
-          const sources = (results?.subagent_results || []).flatMap((sr) => sr.sources) as Source[];
-          return <Sidebar sources={sources} />;
+      const sources = (results?.subagent_results || []).flatMap((sr) => sr.sources) as Source[];
+      return <Sidebar sources={sources} isLoading={isLoading} sessionId={sessionId} />;
         })()}
       </div>
     </div>

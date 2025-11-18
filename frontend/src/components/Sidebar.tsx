@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { ActivityFeed } from "@/components/ActivityFeed";
 
 type Source = {
   title: string;
@@ -10,25 +11,29 @@ type Tab = "activity" | "sources" | "settings";
 
 interface SidebarProps {
   sources?: Source[];
+  isLoading?: boolean;
+  sessionId?: string;
 }
 
-export const Sidebar = ({ sources = [] }: SidebarProps) => {
+export const Sidebar = ({ sources = [], isLoading = false, sessionId }: SidebarProps) => {
   const [activeTab, setActiveTab] = useState<Tab>("activity");
 
   return (
     <aside className="sidebar">
       <div className="sidebar-tabs">
-        <button
-          onClick={() => setActiveTab("activity")}
-          className={`sidebar-tab ${activeTab === "activity" ? "active" : ""}`}
-        >
-          Activity
-        </button>
+        
         <button
           onClick={() => setActiveTab("sources")}
           className={`sidebar-tab ${activeTab === "sources" ? "active" : ""}`}
         >
           Sources
+        </button>
+        
+        <button
+          onClick={() => setActiveTab("activity")}
+          className={`sidebar-tab ${activeTab === "activity" ? "active" : ""}`}
+        >
+          Activity
         </button>
         <button
           onClick={() => setActiveTab("settings")}
@@ -40,7 +45,7 @@ export const Sidebar = ({ sources = [] }: SidebarProps) => {
 
       <div className="sidebar-content">
         {activeTab === "activity" && (
-          <p className="sidebar-empty">No research activity yet</p>
+          <ActivityFeed isLoading={isLoading} sessionId={sessionId} />
         )}
         {activeTab === "sources" && (
           sources.length === 0 ? (
