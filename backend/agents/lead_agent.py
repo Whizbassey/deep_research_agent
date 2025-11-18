@@ -13,12 +13,13 @@ class LeadAgent:
         self.ai_service = ai_service
         self.sub_agent = sub_agent
     
-    def research(self, query: str, silent: bool = False) -> dict:
+    def research(self, query: str, num_results_per_agent: int = 2, silent: bool = False) -> dict:
         """
         Conduct multi-agent research on a query.
         
         Args:
             query: Research question or topic
+            num_results_per_agent: Number of search results to gather per subagent
             silent: If True, suppress console output (for API usage)
         """
         if not silent:
@@ -46,7 +47,7 @@ class LeadAgent:
         
         subagent_results = []
         for i, search_term in enumerate(subtask_searches, 1):
-            result = self.sub_agent.research(i, search_term, silent=silent)
+            result = self.sub_agent.research(i, search_term, num_results=num_results_per_agent, silent=silent)
             subagent_results.append(result)
         
         total_sources = sum(len(r["sources"]) for r in subagent_results)

@@ -22,7 +22,7 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:3000",  # Next.js default
         "http://localhost:5173",  # Vite default
-        "https://your-lovable-app.lovable.app",  # Replace with your Lovable URL
+        "https://your-app.vercel.app",  # Replace with Production Frontend URL
         "*"  # Allow all origins (remove in production)
     ],
     allow_credentials=True,

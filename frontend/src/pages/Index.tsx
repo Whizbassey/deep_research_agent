@@ -6,11 +6,24 @@ import { ResearchResults } from "@/components/ResearchResults";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 
+interface Source {
+  title: string;
+  content: string;
+  url?: string;
+}
+
+interface SubagentResult {
+  subtask: number;
+  search_focus: string;
+  sources: Source[];
+}
+
 interface ResearchData {
   query: string;
   subagents: number;
   total_sources: number;
   synthesis: string;
+  subagent_results?: SubagentResult[];
 }
 
 const Index = () => {
@@ -66,10 +79,10 @@ const Index = () => {
   return (
     <div className="page-container">
       <nav className="top-nav">
-        <h2 className="text-xl font-semibold text-foreground">Cerebras Deep Research</h2>
+        <h2 className="text-xl font-semibold text-foreground">Cognitia Deep Research</h2>
         <Button variant="outline" size="sm" className="text-sm">
           <span className="mr-2">●</span>
-          Configure API Keys
+          Download PDF
         </Button>
       </nav>
 
@@ -78,7 +91,7 @@ const Index = () => {
           {!isLoading && !results && (
             <div className="content-wrapper">
               <header className="page-header">
-                <h1 className="page-title">Cerebras Deep Research</h1>
+                <h1 className="page-title">Cognitia Deep Research</h1>
                 <p className="page-subtitle">
                   AI-powered research that goes deeper than search
                 </p>
@@ -111,8 +124,10 @@ const Index = () => {
             </div>
           )}
         </div>
-
-        <Sidebar />
+        {(() => {
+          const sources = (results?.subagent_results || []).flatMap((sr) => sr.sources) as Source[];
+          return <Sidebar sources={sources} />;
+        })()}
       </div>
     </div>
   );

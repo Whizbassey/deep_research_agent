@@ -1,5 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { FileText, Users, Database } from "lucide-react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 interface ResearchData {
   query: string;
@@ -16,22 +18,24 @@ export const ResearchResults = ({ data }: ResearchResultsProps) => {
   if (!data) return null;
 
   return (
-    <div className="results-container">
-      <div className="results-grid">
-        <Card className="stat-card">
-          <div className="stat-card-content">
-            <div className="stat-icon-wrapper bg-primary/10">
-              <FileText className="h-6 w-6 text-primary" />
-            </div>
-            <div>
-              <p className="stat-label">Query</p>
-              <p className="stat-value truncate">{data.query}</p>
-            </div>
+    <div className="results-container space-y-6">
+      {/* Wide query container */}
+      <Card className="w-full">
+        <div className="flex items-start gap-4 p-4">
+          <div className="stat-icon-wrapper bg-primary/10">
+            <FileText className="h-6 w-6 text-primary" />
           </div>
-        </Card>
+          <div className="flex-1">
+            <p className="stat-label">Query</p>
+            <p className="stat-value break-words">{data.query}</p>
+          </div>
+        </div>
+      </Card>
 
-        <Card className="stat-card">
-          <div className="stat-card-content">
+      {/* Subagents and total sources below */}
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <Card>
+          <div className="stat-card-content p-4">
             <div className="stat-icon-wrapper bg-accent/10">
               <Users className="h-6 w-6 text-accent" />
             </div>
@@ -42,8 +46,8 @@ export const ResearchResults = ({ data }: ResearchResultsProps) => {
           </div>
         </Card>
 
-        <Card className="stat-card">
-          <div className="stat-card-content">
+        <Card>
+          <div className="stat-card-content p-4">
             <div className="stat-icon-wrapper bg-primary/10">
               <Database className="h-6 w-6 text-primary" />
             </div>
@@ -55,14 +59,11 @@ export const ResearchResults = ({ data }: ResearchResultsProps) => {
         </Card>
       </div>
 
+      {/* Synthesis section */}
       <Card className="synthesis-card">
-        <h3 className="synthesis-title">
-          Research Synthesis
-        </h3>
-        <div className="prose prose-slate max-w-none">
-          <p className="synthesis-content">
-            {data.synthesis}
-          </p>
+        <h3 className="synthesis-title">Research Synthesis</h3>
+        <div className="prose prose-slate max-w-none p-4">
+          <ReactMarkdown remarkPlugins={[remarkGfm]}>{data.synthesis}</ReactMarkdown>
         </div>
       </Card>
     </div>

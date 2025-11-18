@@ -40,13 +40,14 @@ async def research(
     """
     try:
         # Perform research using the lead agent
-        result = lead_agent.research(request.query)
+        result = lead_agent.research(request.query, num_results_per_agent=request.num_results_per_agent)
         
         return ResearchResponse(
             query=result["query"],
             subagents=result["subagents"],
             total_sources=result["total_sources"],
-            synthesis=result["synthesis"]
+            synthesis=result["synthesis"],
+            subagent_results=result.get("subagent_results")
         )
     
     except Exception as e:

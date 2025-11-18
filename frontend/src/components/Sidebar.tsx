@@ -1,8 +1,18 @@
 import { useState } from "react";
 
+type Source = {
+  title: string;
+  content: string;
+  url?: string;
+};
+
 type Tab = "activity" | "sources" | "settings";
 
-export const Sidebar = () => {
+interface SidebarProps {
+  sources?: Source[];
+}
+
+export const Sidebar = ({ sources = [] }: SidebarProps) => {
   const [activeTab, setActiveTab] = useState<Tab>("activity");
 
   return (
@@ -33,7 +43,29 @@ export const Sidebar = () => {
           <p className="sidebar-empty">No research activity yet</p>
         )}
         {activeTab === "sources" && (
-          <p className="sidebar-empty">No sources yet</p>
+          sources.length === 0 ? (
+            <p className="sidebar-empty">No sources yet</p>
+          ) : (
+            <div className="p-2 space-y-2">
+              <p className="text-sm text-muted-foreground">Total Sources: {sources.length}</p>
+              <ul className="space-y-2">
+                {sources.map((src, idx) => (
+                  <li key={idx} className="rounded border p-2">
+                    <p className="font-medium text-sm">
+                      {src.url ? (
+                        <a href={src.url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                          {src.title}
+                        </a>
+                      ) : (
+                        src.title
+                      )}
+                    </p>
+                    <p className="text-xs text-muted-foreground line-clamp-3">{src.content}</p>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )
         )}
         {activeTab === "settings" && (
           <p className="sidebar-empty">Settings</p>

@@ -38,10 +38,15 @@ class SubAgent:
         # Process and filter results
         sources = []
         for result in results:
-            if result.text and len(result.text) > 200:
+            # Extract URL if available in Exa result objects
+            url = getattr(result, "url", None)
+            # Include sources with any non-trivial text to improve visibility
+            if result.text and len(result.text.strip()) > 30:
+                snippet = result.text.strip()[:300]
                 sources.append({
                     "title": result.title,
-                    "content": result.text[:300]
+                    "content": snippet,
+                    "url": url
                 })
         
         return {

@@ -21,6 +21,7 @@ class Source(BaseModel):
     """Source information"""
     title: str
     content: str
+    url: Optional[str] = None
 
 class SubagentResult(BaseModel):
     """Result from a single subagent"""
