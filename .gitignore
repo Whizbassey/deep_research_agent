@@ -10,7 +10,9 @@ backend/.coverage
 backend/uv.lock
 
 # Frontend - Node/Next.js
+frontend/.env
 frontend/.env.local
+frontend/.env.production
 frontend/.env.production.local
 frontend/.next/
 frontend/out/

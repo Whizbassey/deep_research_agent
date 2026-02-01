@@ -1,21 +1,11 @@
 // API URL - checks for env variable first, then falls back to localhost
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
 
-// API Key for authentication
-const API_KEY = import.meta.env.VITE_API_KEY || '';
-
 // Helper function to get default headers
 const getHeaders = () => {
-  const headers: Record<string, string> = {
+  return {
     'Content-Type': 'application/json',
   };
-  
-  // Add API key if available
-  if (API_KEY) {
-    headers['X-API-Key'] = API_KEY;
-  }
-  
-  return headers;
 };
 
 export interface ResearchRequest {
