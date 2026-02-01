@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { downloadResearchDocx } from "@/lib/pdf";
 import { downloadResearchPDF } from "@/components/ResearchPDF";
-import { getActivity, checkHealth } from "@/lib/api";
+import { getActivity, checkHealth, getActivityStreamUrl, performResearch } from "@/lib/api";
 import { ChevronDown, Download, FileText, File } from "lucide-react";
 import {
   DropdownMenu,
@@ -67,9 +67,9 @@ const Index = () => {
         console.error("Backend not connected:", error);
       }
     };
-    
+
     checkConnection();
-    
+
     // Check connection every 30 seconds
     const interval = setInterval(checkConnection, 30000);
     return () => clearInterval(interval);
@@ -78,9 +78,9 @@ const Index = () => {
   // Stream activity updates during loading
   useEffect(() => {
     if (!isLoading || !sessionId) return;
-    
-    const eventSource = new EventSource(`http://localhost:8000/api/v1/activity/stream/${sessionId}`);
-    
+
+    const eventSource = new EventSource(getActivityStreamUrl(sessionId));
+
     eventSource.onmessage = (event) => {
       try {
         const activity = JSON.parse(event.data);
@@ -90,12 +90,12 @@ const Index = () => {
         console.error('Failed to parse activity:', e);
       }
     };
-    
+
     eventSource.onerror = (error) => {
       console.error('EventSource error:', error);
       eventSource.close();
     };
-    
+
     return () => {
       eventSource.close();
     };
@@ -153,7 +153,7 @@ const Index = () => {
       });
       return;
     }
-    
+
     // RATE LIMITING - DISABLED IN DEVELOPMENT
     // Uncomment the block below when deploying to production
     /*
@@ -173,44 +173,16 @@ const Index = () => {
     setProgress(0);
 
     try {
-      const response = await fetch("http://localhost:8000/api/v1/research", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          query,
-          num_results_per_agent: numResults,
-          model: selectedModel,
-        }),
+      const data = await performResearch({
+        query,
+        num_results_per_agent: numResults,
+        model: selectedModel,
       });
 
-      // RATE LIMIT HEADER - DISABLED IN DEVELOPMENT
-      // Uncomment when deploying to production
-      /*
-      const remaining = response.headers.get("X-RateLimit-Remaining");
-      if (remaining) {
-        setRateLimit(prev => ({ ...prev, remaining: parseInt(remaining) }));
-      }
-      */
-
-      if (!response.ok) {
-        // RATE LIMIT ERROR - DISABLED IN DEVELOPMENT
-        // Uncomment when deploying to production
-        /*
-        if (response.status === 429) {
-          const data = await response.json();
-          throw new Error(data.detail || "Rate limit exceeded. Try again later.");
-        }
-        */
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
       setResults(data);
       setSessionId(data.session_id);
       setProgress(100);
-      
+
       toast({
         title: "Research Complete",
         description: `Found ${data.total_sources} sources across ${data.subagents} agents`,
@@ -297,7 +269,7 @@ const Index = () => {
                 <div className="loading-percentage">{progress}%</div>
                 <div className="w-full max-w-md mx-auto mt-4">
                   <div className="h-2 bg-secondary rounded-full overflow-hidden">
-                    <div 
+                    <div
                       className="h-full bg-primary transition-all duration-300 ease-out rounded-full"
                       style={{ width: `${progress}%` }}
                     />
@@ -327,17 +299,17 @@ const Index = () => {
             </div>
           )}
         </div>
-         {(() => {
-      const sources = (results?.subagent_results || []).flatMap((sr) => sr.sources) as Source[];
-      return (
-        <Sidebar 
-          sources={sources} 
-          isLoading={isLoading} 
-          sessionId={sessionId}
-          selectedModel={selectedModel}
-          onModelChange={setSelectedModel}
-        />
-      );
+        {(() => {
+          const sources = (results?.subagent_results || []).flatMap((sr) => sr.sources) as Source[];
+          return (
+            <Sidebar
+              sources={sources}
+              isLoading={isLoading}
+              sessionId={sessionId}
+              selectedModel={selectedModel}
+              onModelChange={setSelectedModel}
+            />
+          );
         })()}
       </div>
     </div>
