@@ -165,7 +165,11 @@ All colors MUST be HSL.
   }
 
   .content-wrapper {
-    @apply flex-1 flex flex-col items-center justify-center px-8 py-12;
+    @apply flex-1 flex flex-col items-center px-8 py-12;
+  }
+
+  .content-wrapper-results {
+    @apply flex-1 flex flex-col items-start px-8 py-6;
   }
 
   /* Header */
