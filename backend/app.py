@@ -21,12 +21,24 @@ app = FastAPI(
 
 # Get allowed origins from environment or use defaults
 frontend_url = os.getenv("FRONTEND_URL", "http://localhost:5173")
+
+# Support multiple origins via comma-separated list
+additional_origins = os.getenv("ADDITIONAL_CORS_ORIGINS", "")
 allowed_origins = [
     frontend_url,
     "http://localhost:3000",  # Next.js default
     "http://localhost:5173",  # Vite default
     "http://localhost:8080",  # Alternative port
 ]
+
+# Add any additional origins from environment
+if additional_origins:
+    allowed_origins.extend(
+        [origin.strip() for origin in additional_origins.split(",") if origin.strip()]
+    )
+
+# Remove duplicates while preserving order
+allowed_origins = list(dict.fromkeys(allowed_origins))
 
 # Configure CORS for frontend connection
 app.add_middleware(
@@ -72,10 +84,13 @@ if __name__ == "__main__":
 
     is_development = os.getenv("ENVIRONMENT") != "production"
 
+    # Use PORT from environment (Render provides this) or default to 8000 for local dev
+    port = int(os.getenv("PORT", "8000"))
+
     uvicorn.run(
         "app:app",
         host="0.0.0.0",
-        port=8000,
+        port=port,
         reload=is_development,  # Only auto-reload in development
         log_level="info" if is_development else "warning",
         access_log=is_development,
